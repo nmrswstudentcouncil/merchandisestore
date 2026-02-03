@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NMRSW Student Council Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://img5.pic.in.th/file/secure-sv1/happynewyear.png">   
+    
+    <style>
+        /* --- Reset & Variables --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #C41E3A;
+            --primary-dark: #9B1C31;
+            --dark: #1D1D1F;
+            --gray: #F5F5F7;
+            --text-sec: #86868b;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --nav-height: 70px;
+        }
+        
+        html { scroll-behavior: smooth; } /* เลื่อนหน้าแบบนุ่มนวล */
+        body { font-family: 'Sarabun', sans-serif; background: #fff; color: var(--dark); overflow-x: hidden; }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .nav-content {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: var(--nav-height); display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo-img { height: 42px; width: auto; }
+        .logo-text { font-family: 'Kanit'; font-weight: 800; font-size: 1.2rem; color: var(--primary); letter-spacing: -0.5px; }
+
+        /* --- Hero Section (หน้าแรกเต็มจอ) --- */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #fff0f2 0%, #ffffff 70%);
+            padding: 20px;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            animation: fadeIn Up 1s ease-out; z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Kanit'; font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900; line-height: 1.1; margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark), var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem; color: var(--text-sec); margin-bottom: 40px;
+            line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+
+        .cta-btn {
+            display: inline-block; padding: 16px 48px;
+            background: var(--primary); color: white;
+            font-family: 'Kanit'; font-size: 1.2rem; font-weight: 600;
+            border-radius: 50px; text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
+            border: none; cursor: pointer;
+        }
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(196, 30, 58, 0.4);
+            background: var(--primary-dark);
+        }
+
+        /* Decorative Circles */
+        .deco { position: absolute; border-radius: 50%; z-index: 1; filter: blur(60px); opacity: 0.6; }
+        .c1 { width: 300px; height: 300px; top: -50px; right: -50px; background: #ffe4e6; }
+        .c2 { width: 400px; height: 400px; bottom: -100px; left: -100px; background: #f3f4f6; }
+
+        /* --- Shop Section (ส่วนสินค้า) --- */
+        #shop-section {
+            padding: 80px 24px 100px;
+            max-width: 1200px; margin: 0 auto;
+            min-height: 100vh; /* ให้ส่วนร้านค้ามีความสูงอย่างน้อยเต็มจอ */
+        }
+        
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-family: 'Kanit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+        .section-header p { color: var(--text-sec); }
+
+        /* Filter Tabs */
+        .tab-wrapper {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 24px; border-radius: 50px; border: 1px solid transparent;
+            background: var(--gray); font-family: 'Kanit'; font-weight: 500; color: var(--text-sec);
+            cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { background: #e5e5e5; }
+        .tab-btn.active { background: var(--dark); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            text-decoration: none; color: inherit; background: white;
+            border-radius: 24px; transition: all 0.4s ease;
+            position: relative; overflow: hidden;
+            border: 1px solid #f0f0f0; display: block;
+        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: var(--card-shadow); border-color: transparent; }
+
+        .img-wrapper {
+            background: var(--gray); aspect-ratio: 1/1; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .img-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+        .product-card:hover .img-wrapper img { transform: scale(1.08); }
+
+        .badge {
+            position: absolute; top: 15px; left: 15px; z-index: 2;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);
+            color: var(--primary); padding: 6px 12px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .info { padding: 24px; }
+        .cat { font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .name { font-family: 'Kanit'; font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .price { font-family: 'Kanit'; font-weight: 700; font-size: 1.4rem; color: var(--primary); }
+        
+        .buy-btn {
+            width: 40px; height: 40px; background: var(--dark); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: 0.3s; opacity: 0.8;
+        }
+        .product-card:hover .buy-btn { transform: scale(1.1); opacity: 1; background: var(--primary); }
+
+        footer { text-align: center; color: var(--text-sec); padding: 40px; font-size: 0.9rem; background: #fafafa; border-top: 1px solid var(--gray); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo-container" onclick="window.scrollTo(0,0)">
+                <img src="https://img5.pic.in.th/file/secure-sv1/happynewyear.png" alt="Logo" class="logo-img">
+                <span class="logo-text">NMRSW Student Council STORE</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="deco c1"></div>
+        <div class="deco c2"></div>
+        <div class="hero-content">
+            <span style="color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 0.9rem; display: block; margin-bottom: 10px;">OFFICIAL MERCHANDISE</span>
+            <h1>NMRSW<br>Student Council</h1>
+            <p>ร่วมสนับสนุนกิจกรรมและส่งต่อความภาคภูมิใจ<br>ผ่านสินค้าที่ระลึกที่ออกแบบโดยคณะกรรมการนักเรียน</p>
+            <a href="#shop-section" class="cta-btn">เข้าสู่ร้านค้า</a>
+        </div>
+    </section>
+
+    <section id="shop-section">
+        <div class="section-header">
+            <h2>STORE</h2>
+            <p>เลือกชมสินค้าทั้งหมด</p>
+        </div>
+
+        <div class="tab-wrapper">
+            <button class="tab-btn active" onclick="filterShop('all', this)">สินค้าทั้งหมด</button>
+            <button class="tab-btn" onclick="filterShop('clothing', this)">เครื่องแต่งกาย</button>
+            <button class="tab-btn" onclick="filterShop('accessory', this)">ของสะสม</button>
+        </div>
+
+        <div class="products-grid" id="productGrid">
+            
+            <a href="javascript:void(0)" class="product-card" data-cat="accessory" 
+               onclick="goToPayment('flower01', 'ช่อดอกไม้แสดงความยินดี', 200, 'https://img5.pic.in.th/file/secure-sv1/-1845f1d5438262a9.png', 'ช่อดอกไม้แสดงความยินดีในงาน อำลาช่อราชาวดีปีการศึกษา และสามารถมารับได้ที่ห้องคณะกรรมการนักเรียน ในวันที่ 13 กุมภาพันธ์ 256')">
+                <div class="img-wrapper">
+                    <span class="badge">PRE-ORDER</span>
+                    <img src="https://img5.pic.in.th/file/secure-sv1/-1845f1d5438262a9.png" alt="ช่อดอกไม้">
+                </div>
+                <div class="info">
+                    <div class="cat">Accessory</div>
+                    <div class="name">ช่อดอกไม้แสดงความยินดี</div>
+                    <div class="price-row">
+                        <div class="price">฿200</div>
+                        <div class="buy-btn">➔</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 NMRSW Student Council. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // ฟังก์ชันกรองสินค้า
+        function filterShop(cat, btn) {
+            // เปลี่ยนปุ่ม Active
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // กรองการ์ดสินค้า
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if(cat === 'all' || card.getAttribute('data-cat') === cat) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(10px)';
+                    setTimeout(() => card.style.display = 'none', 300);
+                }
+            });
+        }
+
+        // ฟังก์ชันส่งข้อมูลไปหน้าจ่ายเงิน (sessionStorage)
+        function goToPayment(id, name, price, icon, comment) {
+            const productData = { id, name, price, icon, comment};
+            sessionStorage.setItem('selectedProduct', JSON.stringify(productData));
+            window.location.href = 'payment.html';
+        }
+
+        // Animation ตอนโหลดหน้าเว็บ
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
