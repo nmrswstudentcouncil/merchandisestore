@@ -6,6 +6,7 @@
     <title>ชำระเงิน - NMRSW Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://img5.pic.in.th/file/secure-sv1/happynewyear.png">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { 
@@ -332,45 +333,92 @@
             }
         }
 
-        // ฟังก์ชันสำหรับแสดงใบเสร็จ (วางต่อท้าย processPayment หรือที่ว่างใน script)
-    function showReceipt(recNum, date, data) {
-        // 1. เลือกพื้นที่ฝั่งขวาเพื่อเปลี่ยนเนื้อหาเป็นใบเสร็จ
-        const rightPanel = document.querySelector('.right-panel');
-        
-        // 2. คำนวณยอดเงินรวม
-        const total = (currentProduct.price * quantity).toLocaleString();
-        
-        // 3. สร้าง HTML ของใบเสร็จใหม่
-        rightPanel.innerHTML = `
-            <div style="text-align: center; padding: 20px; animation: fadeIn 0.5s;">
-                <div style="font-size: 5rem; margin-bottom: 10px;">✅</div>
-                <h2 style="font-family: 'Kanit'; color: #16a34a; margin-bottom: 5px;">สั่งซื้อสำเร็จ!</h2>
-                <p style="color: #64748B; font-size: 0.9rem;">ขอบคุณสำหรับการสั่งซื้อ</p>
+
+        function downloadReceipt() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerHTML = '⏳ กำลังบันทึก...';
+            btn.disabled = true;
+
+            const element = document.getElementById('receipt-capture-area');
+            
+            html2canvas(element, {
+                scale: 3, 
+                useCORS: true,
+                backgroundColor: "#ffffff", 
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'ใบเสร็จ-NMRSW-' + new Date().getTime() + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
                 
-                <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: left; border: 1px dashed #cbd5e1;">
-                    <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 5px;">รหัสอ้างอิง: <strong>${recNum}</strong></p>
-                    <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 15px;">วันที่: ${date.toLocaleString('th-TH')}</p>
+                btn.innerHTML = '📸 บันทึกรูปใบเสร็จ';
+                btn.disabled = false;
+            }).catch(err => {
+                console.error(err);
+                alert('ไม่สามารถบันทึกรูปได้ในขณะนี้');
+                btn.innerHTML = '📸 บันทึกรูปใบเสร็จ';
+                btn.disabled = false;
+            });
+        }
+
+        
+        function showReceipt(recNum, date, data) {
+            const rightPanel = document.querySelector('.right-panel');
+            const total = (currentProduct.price * quantity).toLocaleString();
+            
+            rightPanel.innerHTML = `
+                <div style="text-align: center; padding: 20px; animation: fadeIn 0.5s;">
                     
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span>ชื่อผู้ซื้อ:</span>
-                        <strong>${data.fullName}</strong>
+                    <div id="receipt-capture-area" style="padding: 30px; background: white; border-radius: 12px; border: 1px solid #f1f5f9;">
+                        <div style="font-size: 5rem; margin-bottom: 10px;">✅</div>
+                        <h2 style="font-family: 'Kanit'; color: #16a34a; margin-bottom: 5px;">สั่งซื้อสำเร็จ!</h2>
+                        <p style="color: #64748B; font-size: 0.9rem; margin-bottom: 20px;">ขอบคุณสำหรับการสั่งซื้อ</p>
+                        
+                        <div style="background: #f8fafc; border-radius: 12px; padding: 20px; text-align: left; border: 2px dashed #cbd5e1;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #64748B; font-size: 0.85rem;">รหัสอ้างอิง:</span>
+                                <span style="font-weight: 600; font-size: 0.85rem;">${recNum}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <span style="color: #64748B; font-size: 0.85rem;">วันที่:</span>
+                                <span style="font-size: 0.85rem;">${date.toLocaleString('th-TH')}</span>
+                            </div>
+                            
+                            <div style="height: 1px; background: #e2e8f0; margin: 10px 0;"></div>
+
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #475569;">ชื่อผู้ซื้อ:</span>
+                                <strong>${data.fullName}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #475569;">สินค้า:</span>
+                                <strong>${currentProduct.name} (x${quantity})</strong>
+                            </div>
+                            
+                            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600; color: var(--text-main);">ยอดชำระสุทธิ</span>
+                                <span style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">฿${total}</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; font-size: 0.7rem; color: #94a3b8;">
+                            NMRSW Store Online System
+                        </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span>สินค้า:</span>
-                        <strong>${currentProduct.name} (x${quantity})</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 15px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 1.2rem; font-weight: bold; color: var(--primary);">
-                        <span>ยอดชำระ:</span>
-                        <span>฿${total}</span>
+                    <div style="display: grid; gap: 12px; margin-top: 25px;">
+                        <button id="saveBtn" onclick="downloadReceipt()" class="checkout-btn" style="background: white; color: var(--text-main); border: 2px solid #e2e8f0;">
+                            📸 บันทึกรูปใบเสร็จ
+                        </button>
+                        
+                        <a href="index.html" class="checkout-btn" style="text-decoration: none; background: #0F172A; display: block;">
+                            กลับไปหน้าแรก
+                        </a>
                     </div>
                 </div>
+            `;
+        }
 
-                <a href="index.html" class="checkout-btn" style="display: block; text-decoration: none; background: #0F172A;">
-                    กลับไปหน้าแรก
-                </a>
-            </div>
-        `;
-    }
+        
 
         function adjustQty(change) {
             if(quantity + change >= 1) { 
