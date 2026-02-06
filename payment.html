@@ -295,6 +295,8 @@
     </div>
 
     <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZH_3IHmoKTtVO0LG6sNZ76Mf-3r-WZpH_xg1tFrb57wUrhUnZ1NnUT5iJZ8QXxDv_/exec';
+        
         let currentProduct = { id: '', name: '', price: 0, icon: '', comment: '' };
         let quantity = 1;
         let selectedMethod = '';
@@ -371,6 +373,7 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '⏳ กำลังประมวลผล...';
             btn.style.opacity = '0.7';
+            btn.disabled = true; // ป้องกันการกดซ้ำ
 
             const now = new Date();
             const recNum = 'REC-' + now.getTime();
@@ -381,7 +384,9 @@
                 studentClass: document.getElementById('stdClass').value,
                 studentNo: document.getElementById('stdNo').value,
                 studentId: document.getElementById('stdId').value,
-                paymentMethod: selectedMethod === 'qrcode' ? 'QR Code' : selectedMethod === 'banking' ? 'โอนเงิน' : 'เงินสด'
+                productName: currentProduct.name, // ส่งชื่อสินค้าไปด้วย
+                totalPrice: currentProduct.price * quantity,
+                paymentMethod: selectedMethod === 'qrcode' ? 'QR Code' : 'โอนเงิน'
             };
 
             let fileData = null, fileName = null, mimeType = null;
