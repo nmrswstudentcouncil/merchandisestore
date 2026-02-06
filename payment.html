@@ -483,6 +483,7 @@
                 studentId: document.getElementById('stdId').value,
                 productName: currentProduct.name, // ส่งชื่อสินค้าไปด้วย
                 totalPrice: currentProduct.price * quantity,
+                quantity: quantity,
                 paymentMethod: selectedMethod === 'qrcode' ? 'QR Code' : 'โอนเงิน'
             };
 
