@@ -4,328 +4,256 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NMRSW Student Council Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="https://img5.pic.in.th/file/secure-sv1/happynewyear.png">   
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://img2.pic.in.th/happynewyear.png">   
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- Reset & Variables --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #C41E3A;
-            --primary-dark: #9B1C31;
-            --dark: #1D1D1F;
-            --gray: #F5F5F7;
-            --text-sec: #86868b;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            --nav-height: 70px;
-        }
+        body { font-family: 'Sarabun', sans-serif; background-color: #FAFAFA; color: #1f2937; }
+        .font-kanit { font-family: 'Kanit', sans-serif; }
         
-        html { scroll-behavior: smooth; } /* เลื่อนหน้าแบบนุ่มนวล */
-        body { font-family: 'Sarabun', sans-serif; background: #fff; color: var(--dark); overflow-x: hidden; }
+        /* Glassmorphism Navbar */
+        .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
 
-        /* --- Navigation --- */
-        nav {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-        .nav-content {
-            max-width: 1200px; margin: 0 auto; padding: 0 24px;
-            height: var(--nav-height); display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
-        .logo-img { height: 42px; width: auto; }
-        .logo-text { font-family: 'Kanit'; font-weight: 800; font-size: 1.2rem; color: var(--primary); letter-spacing: -0.5px; }
-
-        /* --- Hero Section (หน้าแรกเต็มจอ) --- */
-        .hero {
-            height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-            background: radial-gradient(circle at 50% 50%, #fff0f2 0%, #ffffff 70%);
-            padding: 20px;
-            position: relative;
-        }
+        /* Smooth Hover Effects */
+        .product-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); }
         
-        .hero-content {
-            max-width: 800px;
-            animation: fadeIn Up 1s ease-out; z-index: 2;
-        }
+        /* Soft Gradient Text */
+        .text-gradient { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .hero h1 {
-            font-family: 'Kanit'; font-size: clamp(2.5rem, 7vw, 5rem);
-            font-weight: 900; line-height: 1.1; margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--dark), var(--primary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        /* Animation Keyframes (Added for functionality) */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
         }
-
-        .hero p {
-            font-size: 1.2rem; color: var(--text-sec); margin-bottom: 40px;
-            line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;
-        }
-
-        .cta-btn {
-            display: inline-block; padding: 16px 48px;
-            background: var(--primary); color: white;
-            font-family: 'Kanit'; font-size: 1.2rem; font-weight: 600;
-            border-radius: 50px; text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
-            border: none; cursor: pointer;
-        }
-        .cta-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(196, 30, 58, 0.4);
-            background: var(--primary-dark);
-        }
-
-        /* Decorative Circles */
-        .deco { position: absolute; border-radius: 50%; z-index: 1; filter: blur(60px); opacity: 0.6; }
-        .c1 { width: 300px; height: 300px; top: -50px; right: -50px; background: #ffe4e6; }
-        .c2 { width: 400px; height: 400px; bottom: -100px; left: -100px; background: #f3f4f6; }
-
-        /* --- Shop Section (ส่วนสินค้า) --- */
-        #shop-section {
-            padding: 80px 24px 100px;
-            max-width: 1200px; margin: 0 auto;
-            min-height: 100vh; /* ให้ส่วนร้านค้ามีความสูงอย่างน้อยเต็มจอ */
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
         
-        .section-header { text-align: center; margin-bottom: 50px; }
-        .section-header h2 { font-family: 'Kanit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
-        .section-header p { color: var(--text-sec); }
-
-        /* Filter Tabs */
-        .tab-wrapper {
-            display: flex; justify-content: center; gap: 10px; margin-bottom: 50px;
-            flex-wrap: wrap;
-        }
-        .tab-btn {
-            padding: 10px 24px; border-radius: 50px; border: 1px solid transparent;
-            background: var(--gray); font-family: 'Kanit'; font-weight: 500; color: var(--text-sec);
-            cursor: pointer; transition: 0.3s;
-        }
-        .tab-btn:hover { background: #e5e5e5; }
-        .tab-btn.active { background: var(--dark); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-        /* Products Grid */
-        .products-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .product-card {
-            text-decoration: none; color: inherit; background: white;
-            border-radius: 24px; transition: all 0.4s ease;
-            position: relative; overflow: hidden;
-            border: 1px solid #f0f0f0; display: block;
-        }
-        .product-card:hover { transform: translateY(-8px); box-shadow: var(--card-shadow); border-color: transparent; }
-
-        .img-wrapper {
-            background: var(--gray); aspect-ratio: 1/1; position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .img-wrapper img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
-        }
-        .product-card:hover .img-wrapper img { transform: scale(1.08); }
-
-        .badge {
-            position: absolute; top: 15px; left: 15px; z-index: 2;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);
-            color: var(--primary); padding: 6px 12px; border-radius: 12px;
-            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .info { padding: 24px; }
-        .cat { font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .name { font-family: 'Kanit'; font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
-        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-        .price { font-family: 'Kanit'; font-weight: 700; font-size: 1.4rem; color: var(--primary); }
-        
-        .buy-btn {
-            width: 40px; height: 40px; background: var(--dark); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; transition: 0.3s; opacity: 0.8;
-        }
-        .product-card:hover .buy-btn { transform: scale(1.1); opacity: 1; background: var(--primary); }
-
-        footer { text-align: center; color: var(--text-sec); padding: 40px; font-size: 0.9rem; background: #fafafa; border-top: 1px solid var(--gray); }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        }
+        /* Hide Scrollbar for filter pills on small mobile */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
-
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <a href="index.html" class="flex items-center">
-                        <img src="https://img5.pic.in.th/file/secure-sv1/happynewyear.png" 
-                             class="h-10 w-10 md:h-12 md:w-12 mr-3 object-contain" 
-                             alt="Logo">
-                        <span class="text-lg md:text-xl font-bold text-red-600 truncate max-w-[200px] md:max-w-none">
-                            NMRSWSC Store
-                        </span>
-                    </a>
+<body class="antialiased overflow-x-hidden"> <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group relative z-50">
+                <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center p-1 flex-shrink-0">
+                    <img src="https://img2.pic.in.th/happynewyear.png" class="object-contain w-full h-full">
                 </div>
-
-                <div class="hidden md:flex space-x-8 font-medium">
-                    <a href="https://nmrswstudentcouncil.github.io/home" class="hover:text-red-600 transition">หน้าแรก</a>
-                    <a href="index.html" class="hover:text-red-600 transition">สินค้า</a>
-                    <a href="https://nmrswstudentcouncil.github.io/home/news.html" class="hover:text-red-600 transition">ข่าวสาร</a>
-                    <a href="https://nmrswstudentcouncil.github.io/home/about.html" class="hover:text-red-600 transition">เกี่ยวกับเรา</a>
-                    <a href="https://nmrswstudentcouncil.github.io/home/contact.html" class="hover:text-red-600 transition">ติดต่อเรา</a>
+                <div>
+                    <span class="block text-sm font-bold text-gray-400 leading-none">NMRSW SC</span>
+                    <span class="text-xl font-bold font-kanit tracking-tight text-gray-800 group-hover:text-red-600 transition">Merchandise Store</span>
                 </div>
-
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-800 focus:outline-none">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-8 font-medium text-sm text-gray-500">
+                <a href="index.html" class="hover:text-red-600 transition">หน้าแรก</a>
+                <a href="#shop-section" class="hover:text-red-600 transition">สินค้าทั้งหมด</a>
+                <a href="tracking.html" class="hover:text-red-600 transition">ระบบผ่อนชำระ</a>
             </div>
+
+            <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none p-2 rounded-lg hover:bg-gray-100 relative z-50">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-50 border-t border-gray-100">
-           <a href="https://nmrswstudentcouncil.github.io/home" class="block py-3 px-6 text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium">หน้าแรก</a>
-            <a href="index.html" class="block py-3 px-6 text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium">สินค้า</a>
-            <a href="https://nmrswstudentcouncil.github.io/home/news.html" class="block py-3 px-6 text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium">ข่าวสาร</a>
-            <a href="https://nmrswstudentcouncil.github.io/home/about.html" class="block py-3 px-6 text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium">เกี่ยวกับเรา</a>            
-            <a href="https://nmrswstudentcouncil.github.io/home/contact.html" class="block py-3 px-6 text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium">ติดต่อเรา</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 absolute w-full shadow-xl top-[73px] left-0 z-40">
+            <a href="index.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">หน้าแรก</a>
+            <a href="#shop-section" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">สินค้า</a>
+            <a href="tracking.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">ระบบผ่อนชำระ</a>
         </div>
     </nav>
 
-    <script>
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-    </script>
-
-
-    <section class="hero">
-        <div class="deco c1"></div>
-        <div class="deco c2"></div>
-        <div class="hero-content">
-            <span style="color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 0.9rem; display: block; margin-bottom: 10px;">OFFICIAL MERCHANDISE</span>
-            <h1>NMRSW<br>Student Council</h1>
-            <p>ร่วมสนับสนุนกิจกรรมและส่งต่อความภาคภูมิใจ<br>ผ่านสินค้าที่ระลึกที่ออกแบบโดยคณะกรรมการนักเรียน</p>
-            <a href="#shop-section" class="cta-btn">เข้าสู่ร้านค้า</a>
-        </div>
-    </section>
-
-    <section id="shop-section">
-        <div class="section-header">
-            <h2>STORE</h2>
-            <p>เลือกชมสินค้าทั้งหมด</p>
+    <section class="relative pt-28 pb-16 md:pt-32 md:pb-20 px-4 overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <div class="absolute top-0 right-0 w-64 h-64 md:w-[500px] md:h-[500px] bg-red-100 rounded-full blur-3xl mix-blend-multiply filter opacity-70 animate-blob"></div>
+            <div class="absolute top-0 left-0 w-64 h-64 md:w-[500px] md:h-[500px] bg-pink-100 rounded-full blur-3xl mix-blend-multiply filter opacity-70 animate-blob animation-delay-2000"></div>
         </div>
 
-        <div class="tab-wrapper">
-            <button class="tab-btn active" onclick="filterShop('all', this)">สินค้าทั้งหมด</button>
-            <button class="tab-btn" onclick="filterShop('clothing', this)">เครื่องแต่งกาย</button>
-            <button class="tab-btn" onclick="filterShop('accessory', this)">ของสะสม</button>
-        </div>
-
-        <div class="products-grid" id="productGrid">
+        <div class="relative z-10 max-w-5xl mx-auto text-center space-y-6 md:space-y-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mt-4">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] md:text-xs font-bold tracking-wide text-gray-600 uppercase">Official Merchandise</span>
+            </div>
             
-            <a href="javascript:void(0)" class="product-card" data-cat="accessory" 
-               onclick="goToPayment('sticker1', 'ท้ายสว.3 1 อัน', 29, 'https://img2.pic.in.th/IMG_4216.jpeg', ' 🪷 สามารถมารับได้ที่ห้องคณะกรรมการนักเรียนในเวลา 15.10 เป็นต้นไป')">
-                <div class="img-wrapper">
-                    <span class="badge">NEW</span>
-                    <img src="https://img2.pic.in.th/IMG_4216.jpeg" alt="Sticker">
-                </div>
-                <div class="info">
-                    <div class="cat">Accessory</div>
-                    <div class="name">ท้ายสว.3 1 อัน</div>
-                    <div class="price-row">
-                        <div class="price">29 ฿</div>
-                        <div class="buy-btn">➔</div>
-                    </div>
-                </div>
-            </a>
-            <a href="javascript:void(0)" class="product-card" data-cat="accessory" 
-               onclick="goToPayment('sticker2', 'ท้ายสว.3 4 อัน', 100, 'https://img2.pic.in.th/IMG_4216.jpeg', ' 🪷 สามารถมารับได้ที่ห้องคณะกรรมการนักเรียนในเวลา 15.10 เป็นต้นไป')">
-                <div class="img-wrapper">
-                    <span class="badge">NEW</span>
-                    <img src="https://img2.pic.in.th/IMG_4216.jpeg" alt="Sticker">
-                </div>
-                <div class="info">
-                    <div class="cat">Accessory</div>
-                    <div class="name">ท้ายสว.3 4 อัน</div>
-                    <div class="price-row">
-                        <div class="price">100 ฿</div>
-                        <div class="buy-btn">➔</div>
-                    </div>
-                </div>
-            </a>
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 leading-[1.1] tracking-tight">
+                เก็บความทรงจำ<br>
+                <span class="text-gradient">ไว้ตลอดไป</span>
+            </h1>
+            
+            <p class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-light px-2">
+                ร่วมสนับสนุนกิจกรรมนักเรียนผ่านสินค้าที่ระลึกสุดพิเศษ 
+                <span class="hidden md:inline"><br></span>
+                จากคณะกรรมการนักเรียน NMRSW ออกแบบด้วยความตั้งใจเพื่อทุกคน
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 pt-4 px-6 md:px-0">
+                <a href="#shop-section" class="w-full sm:w-auto px-8 py-3 md:py-4 rounded-full bg-gray-900 text-white font-kanit font-semibold text-base md:text-lg hover:bg-red-600 transition shadow-xl hover:shadow-red-500/30 transform hover:-translate-y-1 text-center">
+                    เลือกซื้อสินค้า
+                </a>
+            </div>
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 NMRSW Student Council. All rights reserved.</p>
+    <section id="shop-section" class="py-12 md:py-20 bg-white relative">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 gap-6 text-center md:text-left">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold font-kanit text-gray-900 mb-2">Selected Items</h2>
+                    <p class="text-sm md:text-base text-gray-400">สินค้าคัดสรรพิเศษสำหรับเทศกาลนี้</p>
+                </div>
+                
+                <div class="w-full md:w-auto overflow-x-auto no-scrollbar pb-2 md:pb-0">
+                    <div class="flex gap-2 bg-gray-100 p-1.5 rounded-full whitespace-nowrap min-w-max mx-auto md:mx-0 justify-center">
+                        <button class="px-5 md:px-6 py-2 rounded-full bg-white text-gray-900 shadow-sm text-xs md:text-sm font-bold transition" onclick="filterShop('all', this)">ทั้งหมด</button>
+                        <button class="px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition" onclick="filterShop('accessory', this)">ของที่ระลึก</button>
+                        <button class="px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition" onclick="filterShop('clothing', this)">เครื่องแต่งกาย</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="productGrid">
+                </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-3 mb-6 opacity-50">
+                <img src="https://img2.pic.in.th/happynewyear.png" class="h-8 grayscale">
+                <span class="font-kanit font-bold text-xl">NMRSW SC</span>
+            </div>
+            <p class="text-gray-500 text-sm">&copy; 2026 NMRSW Student Council. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>
-        // ฟังก์ชันกรองสินค้า
-        function filterShop(cat, btn) {
-            // เปลี่ยนปุ่ม Active
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // กรองการ์ดสินค้า
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
-                if(cat === 'all' || card.getAttribute('data-cat') === cat) {
-                    card.style.display = 'block';
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(10px)';
-                    setTimeout(() => card.style.display = 'none', 300);
-                }
-            });
-        }
-
-        // ฟังก์ชันส่งข้อมูลไปหน้าจ่ายเงิน (sessionStorage)
-        function goToPayment(id, name, price, icon, comment) {
-            const productData = { id, name, price, icon, comment};
-            sessionStorage.setItem('selectedProduct', JSON.stringify(productData));
-            window.location.href = 'payment.html';
-        }
-
-        // Animation ตอนโหลดหน้าเว็บ
-        document.addEventListener("DOMContentLoaded", () => {
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 100 * index);
-            });
+        // Mobile Menu
+        // Mobile Menu
+       // Mobile Menu
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
         });
+
+        // Data & Logic (Updated with Stock & Promotion)
+        const productsConfig = [
+            {
+                id: 'sticker01',
+                category: 'accessory',
+                name: 'สติกเกอร์ท้ายสว3',
+                price: 29,
+                image: 'https://img2.pic.in.th/-31e64a38683e184c0.png',
+                description: 'สติกเกอร์ท้ายสว3 รุ่นพิเศษ',
+                installment: { allowed: false },
+                stock: 15, 
+                promotion: { requiredQty: 4, discountPrice: 100 } 
+            },
+            {
+                id: 'flower02',
+                category: 'accessory',
+                name: 'ดอกคัตเตอร์ ( Cutter )',
+                price: 25,
+                image: 'https://img2.pic.in.th/S__2785295.jpg',
+                description: 'ตัวแทนความเสียสละ 🪷 รับได้ที่ห้องคณะกรรมการนักเรียน 13 ก.พ. 69',
+                installment: { allowed: false },
+                stock: 0, 
+                promotion: null 
+            },
+            {
+                id: 'flower03',
+                category: 'accessory',
+                name: 'ดอกทานตะวัน ( Sunflower )',
+                price: 70,
+                image: 'https://img2.pic.in.th/S__2801693.jpg',
+                description: 'ความรักที่มั่นคง 🪷 รับได้ที่ห้องคณะกรรมการนักเรียน 13 ก.พ. 69',
+                installment: {
+                    allowed: false,
+                    periods: [
+                        { no: 1, amount: 40, deadline: '10 ก.พ. 69' },
+                        { no: 2, amount: 30, deadline: '13 ก.พ. 69' }
+                    ]
+                },
+                stock: 0,
+                promotion: null 
+            }
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            productsConfig.forEach(p => {
+                const isSoldOut = p.stock <= 0;
+                
+                // จัดการเรื่องป้าย (Badge)
+                let badgeHTML = '';
+                if (isSoldOut) {
+                    badgeHTML = `<div class="absolute top-4 right-4 bg-red-600/90 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm z-10">SOLD OUT</div>`;
+                } else if (p.installment.allowed) {
+                    badgeHTML = `<div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-gray-900 text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm border border-gray-100 z-10">✨ ผ่อนได้</div>`;
+                }
+
+                // จัดการเรื่องป้ายโปรโมชั่น (แก้ข้อความให้สื่อว่าลดเป็นเซ็ต)
+                let promoHTML = '';
+                if (p.promotion && !isSoldOut) {
+                    promoHTML = `<div class="mt-2 text-[11px] font-medium text-red-600 bg-red-50 px-2 py-1 rounded-md inline-block w-fit">🔥 ซื้อทุกๆ ${p.promotion.requiredQty} ชิ้น ลดเหลือชิ้นละ ฿${p.promotion.discountPrice}</div>`;
+                }
+                
+                const card = document.createElement('div');
+                card.className = `product-card group bg-white rounded-3xl p-3 border border-gray-100 h-full flex flex-col transform-gpu ${isSoldOut ? 'opacity-60 grayscale cursor-not-allowed' : 'cursor-pointer'}`;
+                card.setAttribute('data-cat', p.category);
+                
+                if (!isSoldOut) {
+                    card.onclick = () => { 
+                        sessionStorage.setItem('selectedProduct', JSON.stringify(p)); 
+                        window.location.href = 'payment.html'; 
+                    };
+                }
+                
+                card.innerHTML = `
+                    <div class="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 mb-4">
+                        ${badgeHTML}
+                        <img src="${p.image}" class="w-full h-full object-cover ${isSoldOut ? '' : 'transform group-hover:scale-110 transition duration-700'}" loading="lazy">
+                        <div class="absolute inset-0 bg-black/0 ${isSoldOut ? '' : 'group-hover:bg-black/5'} transition duration-300"></div>
+                    </div>
+                    
+                    <div class="px-2 pb-2 flex-1 flex flex-col">
+                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-kanit">${p.category}</div>
+                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-1 line-clamp-2">${p.name}</h3>
+                        ${promoHTML}
+                        
+                        <div class="mt-auto flex items-center justify-between pt-3 border-t border-gray-50">
+                            <div>
+                                <span class="text-xs text-gray-400">ราคา</span>
+                                <div class="text-xl font-bold font-kanit text-gray-900">฿${p.price}</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-full ${isSoldOut ? 'bg-gray-300 text-gray-500' : 'bg-gray-900 text-white group-hover:bg-red-600 group-hover:shadow-red-500/40'} flex items-center justify-center transition shadow-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterShop(cat, btn) {
+            const buttons = btn.parentElement.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.className = "px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition";
+            });
+            btn.className = "px-5 md:px-6 py-2 rounded-full bg-white text-gray-900 shadow-sm text-xs md:text-sm font-bold transition";
+
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.style.display = (cat === 'all' || card.getAttribute('data-cat') === cat) ? 'flex' : 'none';
+            });
+        }
+        
+        renderProducts();
     </script>
 </body>
 </html>
