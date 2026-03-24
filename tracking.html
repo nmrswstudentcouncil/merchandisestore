@@ -3,36 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบผ่อนชำระ - NMRSW Store</title>
+    <title>ตรวจสอบสถานะการผ่อน - NMRSW Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://img2.pic.in.th/happynewyear.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Sarabun', sans-serif; background: #F8FAFC; color: #334155; }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background: linear-gradient(135deg, #f1f5f9 0%, #ffffff 50%, #f8fafc 100%);
+            color: #334155; 
+        }
         .font-kanit { font-family: 'Kanit', sans-serif; }
         
-        .timeline-line { position: absolute; left: 24px; top: 10px; bottom: 0; width: 2px; background: #E2E8F0; z-index: 0; }
+        /* Smooth Fade In Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Timeline Custom Styles */
+        .timeline-line { position: absolute; left: 28px; top: 16px; bottom: 0; width: 2px; background: #E2E8F0; z-index: 0; }
         .timeline-node { z-index: 10; position: relative; }
         
-        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; }
-        
-        .input-search {
-            background: #F1F5F9; border: 2px solid transparent; transition: all 0.3s;
+        /* Glassmorphism utilities */
+        .glass-nav { 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8); 
         }
-        .input-search:focus { background: white; border-color: #1e293b; box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.1); }
+        
+        /* Custom Input Search */
+        .input-search {
+            background: #ffffff; 
+            border: 2px solid #e2e8f0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-search:focus { 
+            background: #ffffff; 
+            border-color: #ef4444; 
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15); 
+        }
+        
+        /* Animated Progress Bar */
+        .progress-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center selection:bg-red-100 selection:text-red-900">
 
     <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center p-1">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group relative z-50">
+                <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center p-1 flex-shrink-0">
                     <img src="https://img2.pic.in.th/happynewyear.png" class="object-contain w-full h-full">
                 </div>
                 <div>
                     <span class="block text-sm font-bold text-gray-400 leading-none">NMRSW SC</span>
-                    <span class="text-xl font-bold font-kanit tracking-tight text-gray-800 group-hover:text-red-600 transition">Store</span>
+                    <span class="text-xl font-bold font-kanit tracking-tight text-gray-800 group-hover:text-red-600 transition">Merchandise Store</span>
                 </div>
             </a>
             
@@ -42,124 +74,152 @@
                 <a href="tracking.html" class="hover:text-red-600 transition">ระบบผ่อนชำระ</a>
             </div>
 
-            <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none p-2 rounded-lg hover:bg-gray-100">
+            <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none p-2 rounded-lg hover:bg-gray-100 relative z-50">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-xl">
-            <a href="index.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50">หน้าแรก</a>
-            <a href="#shop-section" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50">สินค้า</a>
-            <a href="tracking.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50">ระบบผ่อนชำระ</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 absolute w-full shadow-xl top-[73px] left-0 z-40">
+            <a href="index.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">หน้าแรก</a>
+            <a href="#shop-section" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">สินค้า</a>
+            <a href="tracking.html" class="block py-4 px-6 hover:bg-gray-50 border-b border-gray-50 text-gray-800 font-medium">ระบบผ่อนชำระ</a>
         </div>
     </nav>
 
-    <main class="w-full max-w-lg px-4 pt-24 pb-10 flex-1">
+    <main class="w-full max-w-lg px-4 pt-28 pb-12 flex-1">
         
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold font-kanit text-slate-900 mb-2">ตรวจสอบสถานะการผ่อน</h1>
-            <p class="text-slate-500 mb-6 text-sm">กรอกรหัสนักเรียนเพื่อดูความคืบหน้า</p>
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-2xl mb-4 shadow-inner">
+                🔍
+            </div>
+            <h1 class="text-3xl font-bold font-kanit text-slate-900 mb-2 tracking-tight">สถานะการผ่อนชำระ</h1>
+            <p class="text-slate-500 mb-8 text-sm">กรอกรหัสนักเรียนของคุณเพื่อดูประวัติและความคืบหน้า</p>
             
-            <div class="relative">
-                <input type="number" id="searchInput" class="input-search w-full h-14 pl-6 pr-24 rounded-2xl text-lg font-bold text-slate-800 outline-none placeholder-slate-400" placeholder="รหัสนักเรียน 5 หลัก">
-                <button onclick="searchStatus()" class="absolute right-2 top-2 h-10 px-5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-sm transition shadow-lg">
+            <div class="relative group">
+                <input type="number" id="searchInput" class="input-search w-full h-14 pl-6 pr-[100px] rounded-2xl text-lg font-bold text-slate-800 outline-none placeholder-slate-400" placeholder="รหัสนักเรียน 5 หลัก">
+                <button onclick="searchStatus()" class="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-slate-900 hover:bg-red-600 text-white rounded-xl font-bold text-sm transition-colors duration-300 shadow-md">
                     ค้นหา
                 </button>
             </div>
-            <p id="statusMsg" class="text-sm mt-4 text-red-500 font-medium min-h-[20px]"></p>
+            <p id="statusMsg" class="text-sm mt-4 text-red-500 font-medium min-h-[20px] transition-all"></p>
         </div>
 
-        <div id="resultCard" class="hidden animate-fade-in-up space-y-4">
+        <div id="resultCard" class="hidden animate-fade-in-up space-y-5">
             
-            <div class="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full opacity-50"></div>
+            <div class="bg-white rounded-[2rem] p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-gradient-to-br from-red-50 to-orange-50 rounded-full opacity-60 blur-2xl"></div>
                 
-                <div class="relative z-10 flex justify-between items-start mb-4">
+                <div class="relative z-10 flex justify-between items-start mb-6">
                     <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Student Info</p>
-                        <h2 id="stName" class="text-xl font-bold font-kanit text-slate-800 mt-1">...</h2>
-                        <p class="text-slate-500 text-sm">รหัส: <span id="stId" class="font-mono bg-slate-100 px-1 rounded">...</span></p>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Student Profile</p>
+                        </div>
+                        <h2 id="stName" class="text-2xl font-bold font-kanit text-slate-800">...</h2>
+                        <p class="text-slate-500 text-sm mt-0.5">รหัสประจำตัว: <span id="stId" class="font-mono font-medium text-slate-700">...</span></p>
                     </div>
-                    <div id="statusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Checking...</div>
+                    <div id="statusBadge" class="px-4 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 shadow-sm border border-slate-200">
+                        Checking...
+                    </div>
                 </div>
 
-                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-xl">🛍️</div>
+                <div class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100/80 backdrop-blur-sm">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-2xl">
+                            🛍️
+                        </div>
                         <div>
-                            <p class="text-xs text-slate-400">สินค้า</p>
-                            <p id="prodName" class="font-bold text-slate-700 leading-tight">...</p>
+                            <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wide">รายการสินค้า</p>
+                            <p id="prodName" class="font-bold text-slate-800 text-base leading-tight mt-0.5">...</p>
                         </div>
                     </div>
                     
-                    <div class="mt-4">
-                        <div class="flex justify-between text-xs font-bold mb-2">
-                            <span class="text-green-600">จ่ายแล้ว <span id="paidAmt">0</span></span>
-                            <span class="text-slate-400">จากทั้งหมด <span id="totalAmt">0</span></span>
+                    <div>
+                        <div class="flex justify-between text-sm font-bold mb-2.5">
+                            <span class="text-emerald-600 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span id="paidAmt" class="text-lg">0</span> ฿
+                            </span>
+                            <span class="text-slate-400 flex items-center gap-1">
+                                รวม <span id="totalAmt" class="text-slate-700">0</span> ฿
+                            </span>
                         </div>
-                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                            <div id="progBar" class="h-full bg-green-500 rounded-full w-0 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                        <div class="w-full bg-slate-200/80 h-3 rounded-full overflow-hidden shadow-inner p-0.5">
+                            <div id="progBar" class="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 progress-striped rounded-full w-0 transition-all duration-1000 ease-out shadow-sm relative">
+                                <div class="absolute inset-0 bg-white/20"></div>
+                            </div>
                         </div>
-                        <div class="text-right mt-1">
-                            <span class="text-xs text-red-500 font-bold">คงเหลือ <span id="remainAmt">0</span></span>
+                        <div class="text-right mt-2">
+                            <span class="text-[13px] text-slate-500 font-medium">ยอดคงเหลือ <span id="remainAmt" class="text-red-500 font-bold text-base ml-1">0</span> ฿</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                <h3 class="font-bold font-kanit text-slate-800 mb-6 flex items-center gap-2">
-                    <span>🕒</span> ประวัติการชำระ
+            <div class="bg-white rounded-[2rem] p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h3 class="font-bold font-kanit text-slate-800 text-lg mb-6 flex items-center gap-2">
+                    <span class="text-xl">📋</span> ประวัติการชำระ
                 </h3>
                 <div class="relative pl-2" id="timelineContainer">
                     </div>
             </div>
 
-            <div id="paymentSection" class="bg-slate-900 rounded-3xl p-6 shadow-2xl text-white relative overflow-hidden hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-red-600 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+            <div id="paymentSection" class="bg-gradient-to-b from-slate-900 to-slate-800 rounded-[2rem] p-7 shadow-2xl text-white relative overflow-hidden hidden">
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-red-500 rounded-full blur-[100px] opacity-30 pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
                 
-                <h3 class="font-bold font-kanit text-lg mb-2 relative z-10">💳 ชำระงวดถัดไป</h3>
-                <p class="text-slate-400 text-sm mb-6 relative z-10">เลือกช่องทางชำระเงินและแนบสลิป</p>
-
-                <div class="grid grid-cols-2 gap-3 mb-5 relative z-10">
-                    <div onclick="selectPay('qr')" id="btn-qr" class="border border-slate-700 bg-slate-800/50 rounded-xl p-3 text-center cursor-pointer hover:border-red-500 transition backdrop-blur-sm">
-                        <div class="text-2xl mb-1">📱</div>
-                        <div class="text-xs font-bold">QR PromptPay</div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">💳</div>
+                        <h3 class="font-bold font-kanit text-xl">ชำระงวดถัดไป</h3>
                     </div>
-                    <div onclick="selectPay('bank')" id="btn-bank" class="border border-slate-700 bg-slate-800/50 rounded-xl p-3 text-center cursor-pointer hover:border-blue-500 transition backdrop-blur-sm">
-                        <div class="text-2xl mb-1">🏦</div>
-                        <div class="text-xs font-bold">เลขบัญชี</div>
+                    <p class="text-slate-400 text-sm mb-6 ml-11">เลือกช่องทางชำระเงินและแนบหลักฐาน</p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div onclick="selectPay('qr')" id="btn-qr" class="border border-slate-700/50 bg-slate-800/50 rounded-2xl p-4 text-center cursor-pointer hover:bg-slate-700 transition duration-300">
+                            <div class="text-3xl mb-2 drop-shadow-md">📱</div>
+                            <div class="text-sm font-bold text-slate-200">QR PromptPay</div>
+                        </div>
+                        <div onclick="selectPay('bank')" id="btn-bank" class="border border-slate-700/50 bg-slate-800/50 rounded-2xl p-4 text-center cursor-pointer hover:bg-slate-700 transition duration-300">
+                            <div class="text-3xl mb-2 drop-shadow-md">🏦</div>
+                            <div class="text-sm font-bold text-slate-200">เลขบัญชีธนาคาร</div>
+                        </div>
                     </div>
-                </div>
 
-                <div id="pay-info-qr" class="hidden mb-4 text-center bg-white p-4 rounded-xl text-slate-900">
-                <img id="qrImgTracking" src="https://img1.pic.in.th/images/611180469_884599267452953_5923060998778918454_n.jpg" class="w-64 mx-auto rounded-lg mb-2">
-                <p class="text-xs text-slate-500 mb-3">สแกนเพื่อชำระเงิน</p>
-                
-                <button onclick="downloadQrImage('qrImgTracking')" class="mx-auto flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    บันทึกรูป QR
-                </button>
-            </div>
-                <div id="pay-info-bank" class="hidden mb-4 p-4 bg-white rounded-xl text-slate-900 border-l-4 border-blue-600">
-                    <p class="font-bold text-blue-600 text-xs uppercase">การโอนเงิน</p>
-                    <p class="text-xl font-bold font-mono my-1">966-0-71965-5</p>
-                    <p class="text-xs text-slate-500">กรุงไทย • ศศิวัฒน์ เพชรอินทร์</p>
-                </div>
-
-                <div class="space-y-3 relative z-10">
-                    <input type="number" id="payAmountInput" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 outline-none focus:border-red-500 transition text-center font-bold" placeholder="ระบุจำนวนเงิน (บาท)">
-                    
-                    <div class="relative">
-                        <input type="file" id="slipFile" accept="image/*" class="hidden" onchange="previewFile()">
-                        <label for="slipFile" class="flex items-center justify-center w-full py-3 border border-dashed border-slate-600 rounded-xl cursor-pointer hover:bg-slate-800 transition text-sm text-slate-400">
-                            <span id="fileName">📎 แนบหลักฐานการโอน</span>
-                        </label>
+                    <div id="pay-info-qr" class="hidden mb-6 text-center bg-white p-5 rounded-2xl text-slate-900 shadow-lg animate-fade-in-up">
+                        <img id="qrImgTracking" src="https://img1.pic.in.th/images/611180469_884599267452953_5923060998778918454_n.jpg" class="w-56 mx-auto rounded-xl mb-4 border border-slate-100 shadow-sm">
+                        <button onclick="downloadQrImage('qrImgTracking')" class="mx-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold transition shadow-md">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            บันทึกรูป QR Code
+                        </button>
                     </div>
                     
-                    <button id="submitPayBtn" onclick="submitInstallment()" class="w-full py-4 bg-red-600 text-white rounded-xl font-bold font-kanit shadow-lg hover:bg-red-700 transition transform active:scale-95">
-                        แจ้งชำระเงิน
-                    </button>
+                    <div id="pay-info-bank" class="hidden mb-6 p-5 bg-white rounded-2xl text-slate-900 shadow-lg animate-fade-in-up border-l-4 border-blue-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="https://img1.pic.in.th/images/628ccb9bbf47c3697169430a9d4ee301.png" onerror="this.style.display='none'" class="h-6"> <p class="font-bold text-blue-600 text-sm uppercase tracking-wider">ธนาคารกรุงไทย</p>
+                        </div>
+                        <p class="text-2xl font-bold font-mono text-slate-800 mb-1">966-0-71965-5</p>
+                        <p class="text-sm text-slate-500 font-medium">ชื่อบัญชี: ศศิวัฒน์ เพชรอินทร์</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 font-bold">฿</span>
+                            <input type="number" id="payAmountInput" class="w-full bg-slate-950/50 border border-slate-700 text-white rounded-2xl pl-10 pr-4 py-3.5 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition font-bold text-lg" placeholder="ระบุจำนวนเงินที่ต้องการโอน">
+                        </div>
+                        
+                        <div class="relative group">
+                            <input type="file" id="slipFile" accept="image/*" class="hidden" onchange="previewFile()">
+                            <label for="slipFile" class="flex flex-col items-center justify-center w-full py-5 border-2 border-dashed border-slate-600 rounded-2xl cursor-pointer hover:bg-slate-800/50 hover:border-slate-500 transition text-sm text-slate-400 group-hover:text-slate-300">
+                                <span class="text-2xl mb-2">📸</span>
+                                <span id="fileName" class="font-medium text-center px-4">คลิกเพื่ออัปโหลดสลิปโอนเงิน</span>
+                            </label>
+                        </div>
+                        
+                        <button id="submitPayBtn" onclick="submitInstallment()" class="w-full py-4 mt-2 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-bold font-kanit text-lg shadow-[0_0_20px_rgba(220,38,38,0.4)] transition transform active:scale-[0.98]">
+                            ยืนยันการแจ้งชำระเงิน
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -167,7 +227,7 @@
     </main>
 
     <script>
-        // *** Logic เดิม 100% ***
+        // *** Logic เดิมทั้งหมด (เปลี่ยนแค่ UI Classes ใน JS) ***
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsTOq9TWO4wHUTvJC0pQW5_Q8FuSyYYMEQEpn_g5WbsH-_OBlN018bqsEC2UFo7vMLWw/exec';
         
         let currentData = null;
@@ -184,9 +244,9 @@
             const statusMsg = document.getElementById('statusMsg');
             const resultCard = document.getElementById('resultCard');
 
-            if(id.length < 5) { statusMsg.innerText = "กรุณากรอกรหัสนักเรียนให้ครบ 5 หลัก"; return; }
+            if(id.length < 5) { statusMsg.innerText = "⚠️ กรุณากรอกรหัสนักเรียนให้ครบ 5 หลัก"; return; }
 
-            statusMsg.innerText = "กำลังค้นหาข้อมูล...";
+            statusMsg.innerHTML = `<span class="inline-block animate-pulse text-slate-500">กำลังค้นหาข้อมูล...</span>`;
             resultCard.classList.add('hidden');
 
             fetch(`${APPS_SCRIPT_URL}?id=${id}`)
@@ -203,7 +263,7 @@
             })
             .catch(err => {
                 console.error(err);
-                statusMsg.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
+                statusMsg.innerText = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่";
             });
         }
 
@@ -219,12 +279,12 @@
             
             const badge = document.getElementById('statusBadge');
             if(d.status === 'Completed') {
-                badge.innerHTML = "✅ ชำระครบแล้ว";
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200";
+                badge.innerHTML = "✨ ชำระครบแล้ว";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm";
                 document.getElementById('paymentSection').classList.add('hidden');
             } else {
                 badge.innerHTML = "⏳ กำลังผ่อนชำระ";
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200 shadow-sm";
                 document.getElementById('paymentSection').classList.remove('hidden');
             }
 
@@ -232,29 +292,28 @@
             document.getElementById('paidAmt').innerText = paid.toLocaleString();
             document.getElementById('remainAmt').innerText = remain.toLocaleString();
             
-            // Delay progress bar for animation effect
             setTimeout(() => {
                 document.getElementById('progBar').style.width = `${(paid/total)*100}%`;
             }, 100);
 
-            // Render Timeline (Updated UI HTML string, Same Logic)
+            // Render Timeline 
             const tl = document.getElementById('timelineContainer');
             tl.innerHTML = '<div class="timeline-line"></div>';
             
             res.history.forEach((h, index) => {
                 tl.innerHTML += `
-                    <div class="flex gap-4 mb-6 relative timeline-node">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200 border-4 border-white z-10">
+                    <div class="flex gap-5 mb-6 relative timeline-node group">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold border-[3px] border-white shadow-sm z-10 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300">
                             ${index + 1}
                         </div>
-                       <div class="flex-1 bg-slate-50 rounded-xl p-3 border border-slate-100">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-slate-700 text-sm">ชำระครั้งที่ ${index + 1}</span>
-                                <span class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded">สำเร็จ</span>
+                       <div class="flex-1 bg-white hover:bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm transition-colors duration-300">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="font-bold text-slate-800">ชำระครั้งที่ ${index + 1}</span>
+                                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">สำเร็จ</span>
                             </div>
-                            <div class="flex justify-between text-xs text-slate-500">
-                                <span>${h.date}</span>
-                                <span class="font-bold text-slate-800">฿${h.amount}</span>
+                            <div class="flex justify-between text-sm text-slate-500 items-center">
+                                <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> ${h.date}</span>
+                                <span class="font-bold text-slate-700 text-base">฿${h.amount}</span>
                             </div>
                         </div>
                     </div>`;
@@ -262,13 +321,13 @@
 
             if(d.status !== 'Completed') {
                  tl.innerHTML += `
-                    <div class="flex gap-4 mb-6 relative timeline-node opacity-60">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold border-4 border-white z-10">
+                    <div class="flex gap-5 mb-2 relative timeline-node opacity-80">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold border-[3px] border-white shadow-sm z-10 text-xs">
                             Next
                         </div>
-                        <div class="flex-1 bg-white border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-between">
-                            <div class="font-bold text-slate-500 text-sm">งวดถัดไป</div>
-                            <div class="text-xs text-red-500 font-bold">ยอดคงเหลือ ${remain.toLocaleString()}.-</div>
+                        <div class="flex-1 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-4 flex items-center justify-between">
+                            <div class="font-bold text-slate-500">งวดถัดไป</div>
+                            <div class="text-sm text-red-500 font-bold bg-red-50 px-3 py-1 rounded-full">คงเหลือ ${remain.toLocaleString()} ฿</div>
                         </div>
                     </div>`;
                  document.getElementById('payAmountInput').value = '';
@@ -278,19 +337,19 @@
         function selectPay(method) {
             selectedMethod = method;
             
-            // Updated Toggle Logic for new UI classes
             const btnQr = document.getElementById('btn-qr');
             const btnBank = document.getElementById('btn-bank');
             
-            // Reset
-            btnQr.className = "border border-slate-700 bg-slate-800/50 rounded-xl p-3 text-center cursor-pointer hover:border-red-500 transition backdrop-blur-sm";
-            btnBank.className = "border border-slate-700 bg-slate-800/50 rounded-xl p-3 text-center cursor-pointer hover:border-blue-500 transition backdrop-blur-sm";
+            // Reset Styles
+            const defaultClass = "border border-slate-700/50 bg-slate-800/50 rounded-2xl p-4 text-center cursor-pointer hover:bg-slate-700 transition duration-300";
+            btnQr.className = defaultClass;
+            btnBank.className = defaultClass;
 
-            // Active State
+            // Active Styles
             if(method === 'qr') {
-                btnQr.className = "border-2 border-red-500 bg-red-500/10 rounded-xl p-3 text-center cursor-pointer transition backdrop-blur-sm shadow-[0_0_15px_rgba(239,68,68,0.3)]";
+                btnQr.className = "border-2 border-red-500 bg-red-500/10 rounded-2xl p-4 text-center cursor-pointer transition duration-300 shadow-[0_0_20px_rgba(239,68,68,0.2)] transform scale-[1.02]";
             } else {
-                btnBank.className = "border-2 border-blue-500 bg-blue-500/10 rounded-xl p-3 text-center cursor-pointer transition backdrop-blur-sm shadow-[0_0_15px_rgba(59,130,246,0.3)]";
+                btnBank.className = "border-2 border-blue-500 bg-blue-500/10 rounded-2xl p-4 text-center cursor-pointer transition duration-300 shadow-[0_0_20px_rgba(59,130,246,0.2)] transform scale-[1.02]";
             }
             
             document.getElementById('pay-info-qr').classList.toggle('hidden', method !== 'qr');
@@ -299,21 +358,22 @@
 
         function previewFile() {
             const file = document.getElementById('slipFile').files[0];
+            const label = document.getElementById('fileName').parentElement;
+            
             if(file) {
-                document.getElementById('fileName').innerHTML = `<span class="text-green-400">✓ ${file.name}</span>`;
-                document.getElementById('fileName').parentElement.classList.add('border-green-500', 'bg-green-500/10');
+                document.getElementById('fileName').innerHTML = `<span class="text-emerald-400 font-bold flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${file.name}</span>`;
+                label.classList.remove('border-slate-600', 'hover:bg-slate-800/50');
+                label.classList.add('border-emerald-500', 'bg-emerald-500/10');
             }
         }
 
         async function downloadQrImage(imgId) {
             const imgUrl = document.getElementById(imgId).src;
             try {
-                // ดึงข้อมูลรูปภาพมาทำเป็น Blob
                 const response = await fetch(imgUrl);
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
                 
-                // สร้าง Link ชั่วคราวเพื่อกดดาวน์โหลด
                 const link = document.createElement('a');
                 link.href = blobUrl;
                 link.download = 'QR_NMRSW_Store.jpg';
@@ -323,7 +383,6 @@
                 window.URL.revokeObjectURL(blobUrl);
             } catch (err) {
                 console.error("Download failed, opening in new tab instead", err);
-                // Fallback ถ้าติดปัญหาเรื่อง CORS ให้เปิดรูปหน้าต่างใหม่แทน
                 window.open(imgUrl, '_blank');
             }
         }
@@ -334,12 +393,13 @@
             const btn = document.getElementById('submitPayBtn');
 
             if(!amt || !file || !selectedMethod) {
-                alert("กรุณากรอกจำนวนเงิน, เลือกช่องทาง, และแนบสลิป");
+                alert("⚠️ กรุณาระบุข้อมูลให้ครบถ้วน: จำนวนเงิน, ช่องทางชำระ และแนบสลิปโอนเงิน");
                 return;
             }
 
-            btn.innerText = "กำลังบันทึก...";
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังทำรายการ...`;
             btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             const reader = new FileReader();
             reader.onload = function() {
@@ -366,12 +426,13 @@
                     headers: {'Content-Type': 'text/plain'},
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    alert("บันทึกข้อมูลเรียบร้อย!");
+                    alert("✅ บันทึกข้อมูลการชำระเงินเรียบร้อยแล้ว!");
                     location.reload(); 
                 }).catch(err => {
-                    alert("เกิดข้อผิดพลาด");
-                    btn.innerText = "ลองใหม่";
+                    alert("❌ เกิดข้อผิดพลาด ไม่สามารถส่งข้อมูลได้");
+                    btn.innerText = "ลองใหม่อีกครั้ง";
                     btn.disabled = false;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
                 });
             };
             reader.readAsDataURL(file);
