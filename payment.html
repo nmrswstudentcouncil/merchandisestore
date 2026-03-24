@@ -169,7 +169,9 @@
                         <div class="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200 text-center">
                             
                             <div id="bankInfo" class="hidden text-left bg-white p-4 rounded-xl shadow-sm mb-3 border border-blue-100">
-                                <div class="text-xs text-gray-500 mb-1">ธนาคารกรุงไทย</div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <img src="https://img1.pic.in.th/images/628ccb9bbf47c3697169430a9d4ee301.png" onerror="this.style.display='none'" class="h-6"> <p class="font-bold text-blue-600 text-sm uppercase tracking-wider">ธนาคารกรุงไทย</p>
+                                </div>
                                 <div class="font-bold text-blue-700 text-lg">966-0-71965-5</div>
                                 <div class="text-xs text-gray-400">ศศิวัฒน์ เพชรอินทร์</div>
                             </div>
@@ -181,9 +183,11 @@
                                 บันทึก QR Code
                             </button>
                             
-                            <label class="block w-full py-2 px-4 bg-white border border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 hover:border-gray-400 transition text-sm text-gray-500">
-                                <span class="mr-2">📎</span> แนบสลิปการโอนเงิน
-                                <input type="file" id="slipFile" accept="image/*" class="hidden" onchange="checkReady()">
+                            <label id="uploadLabel" class="block w-full py-3 px-4 bg-white border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 hover:border-gray-400 transition text-sm text-gray-500 text-center">
+                                <span id="uploadText" class="flex items-center justify-center gap-2">
+                                    <span class="text-lg">📎</span> แนบสลิปการโอนเงิน
+                                </span>
+                                <input type="file" id="slipFile" accept="image/*" class="hidden" onchange="previewSlipFile()">
                             </label>
                         </div>
                     </div>
@@ -312,6 +316,32 @@
             document.getElementById('qrImg').style.display = m==='qrcode'?'block':'none';
             document.getElementById('downloadQrBtn').style.display = m==='qrcode'?'flex':'none'; // แสดงปุ่มเมื่อเลือก QR
             document.getElementById('bankInfo').style.display = m==='banking'?'block':'none';
+            checkReady();
+        }
+
+        function previewSlipFile() {
+            const fileInput = document.getElementById('slipFile');
+            const uploadLabel = document.getElementById('uploadLabel');
+            const uploadText = document.getElementById('uploadText');
+
+            if (fileInput.files && fileInput.files[0]) {
+                // เมื่อมีไฟล์ถูกเลือก
+                const fileName = fileInput.files[0].name;
+                uploadText.innerHTML = `
+                    <span class="text-green-500 font-bold text-xl">✓</span> 
+                    <span class="text-green-600 font-bold truncate max-w-[200px]">${fileName}</span>
+                `;
+                // เปลี่ยนสีกรอบและพื้นหลังให้เป็นสีเขียว
+                uploadLabel.classList.remove('border-gray-300', 'text-gray-500', 'bg-white');
+                uploadLabel.classList.add('border-green-500', 'bg-green-50');
+            } else {
+                // กรณีที่ผู้ใช้กดยกเลิกการเลือกไฟล์ (รีเซ็ตกลับเป็นแบบเดิม)
+                uploadText.innerHTML = `<span class="text-lg">📎</span> แนบสลิปการโอนเงิน`;
+                uploadLabel.classList.remove('border-green-500', 'bg-green-50');
+                uploadLabel.classList.add('border-gray-300', 'text-gray-500', 'bg-white');
+            }
+            
+            // เรียกใช้เช็คปุ่มยืนยันต่อ
             checkReady();
         }
 
