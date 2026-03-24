@@ -174,7 +174,12 @@
                                 <div class="text-xs text-gray-400">ศศิวัฒน์ เพชรอินทร์</div>
                             </div>
                             
-                            <img id="qrImg" src="https://img5.pic.in.th/file/secure-sv1/611180469_884599267452953_5923060998778918454_n.jpg" class="w-40 mx-auto rounded-xl shadow-md mb-3 hidden">
+                            <img id="qrImg" src="https://img1.pic.in.th/images/611180469_884599267452953_5923060998778918454_n.jpg" class="w-64 mx-auto rounded-xl shadow-md mb-3 hidden">
+
+                            <button id="downloadQrBtn" onclick="downloadQrImage('qrImg')" class="hidden mx-auto mb-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-bold transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                บันทึก QR Code
+                            </button>
                             
                             <label class="block w-full py-2 px-4 bg-white border border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 hover:border-gray-400 transition text-sm text-gray-500">
                                 <span class="mr-2">📎</span> แนบสลิปการโอนเงิน
@@ -193,7 +198,7 @@
     </div>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxq_OV1FxtrcsNatiuMp_3531P-EHcbLyLTO_08zvYIuEnL8ICTuUDoSbCXOMBbLBBB6g/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsTOq9TWO4wHUTvJC0pQW5_Q8FuSyYYMEQEpn_g5WbsH-_OBlN018bqsEC2UFo7vMLWw/exec';
         
         let product = {}, quantity = 1, mode = 'full', canInstallment = false, selectedMethod = '';
 
@@ -305,6 +310,7 @@
             
             document.getElementById('uploadZone').classList.remove('hidden');
             document.getElementById('qrImg').style.display = m==='qrcode'?'block':'none';
+            document.getElementById('downloadQrBtn').style.display = m==='qrcode'?'flex':'none'; // แสดงปุ่มเมื่อเลือก QR
             document.getElementById('bankInfo').style.display = m==='banking'?'block':'none';
             checkReady();
         }
@@ -345,6 +351,29 @@
                 downloadBtn.innerHTML = originalBtnText;
                 downloadBtn.disabled = false;
             });
+        }
+
+        async function downloadQrImage(imgId) {
+            const imgUrl = document.getElementById(imgId).src;
+            try {
+                // ดึงข้อมูลรูปภาพมาทำเป็น Blob
+                const response = await fetch(imgUrl);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                // สร้าง Link ชั่วคราวเพื่อกดดาวน์โหลด
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = 'QR_NMRSW_Store.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+                console.error("Download failed, opening in new tab instead", err);
+                // Fallback ถ้าติดปัญหาเรื่อง CORS ให้เปิดรูปหน้าต่างใหม่แทน
+                window.open(imgUrl, '_blank');
+            }
         }
 
         async function processPayment() {
