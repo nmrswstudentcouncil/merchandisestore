@@ -109,7 +109,7 @@
                     <div class="flex gap-2 bg-gray-100 p-1.5 rounded-full whitespace-nowrap min-w-max mx-auto md:mx-0 justify-center">
                         <button class="px-5 md:px-6 py-2 rounded-full bg-white text-gray-900 shadow-sm text-xs md:text-sm font-bold transition" onclick="filterShop('all', this)">ทั้งหมด</button>
                         <button class="px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition" onclick="filterShop('accessory', this)">ของที่ระลึก</button>
-                        <button class="px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition" onclick="filterShop('clothing', this)">เครื่องแต่งกาย</button>
+                        <button class="px-5 md:px-6 py-2 rounded-full text-gray-500 hover:text-gray-900 text-xs md:text-sm font-medium transition" onclick="filterShop('book', this)">หนังสือรุ่น</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,25 @@
                 },
                 stock: 0,
                 promotion: null 
-            }
+            },
+            {
+                id: 'book1',
+                category: 'book',
+                name: 'หนังสือรุ่นปีการศึกษา 2569 ( Yearbook )',
+                price: 500,
+                image: 'https://img2.pic.in.th/S__2801693.jpg',
+                description: 'หนังสือรุ่นประจำปีการศึกษา 2569',
+                installment: {
+                    allowed: false,
+                    periods: [
+                        { no: 1, amount: 150, deadline: '10 ก.ค. 69' },
+                        { no: 2, amount: 150, deadline: '2 ก.ย. 69' },
+                        { no: 3, amount: 200, deadline: '13 ธ.ค. 69' },
+                    ]
+                },
+                stock: 0,
+                promotion: null 
+            },
         ];
 
         function renderProducts() {
